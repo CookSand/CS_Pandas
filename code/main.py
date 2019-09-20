@@ -92,3 +92,85 @@ df.at[dates[0], 'A']
 
 
 ## Selection by position
+
+df.iloc[3]
+df.iloc[3:5, 0:2]
+df.iloc[[1, 2, 4], [0, 2]]
+
+
+df.iloc[1, 1]
+df.iat[1, 1]
+
+
+## Boolean indexing
+
+# Using a single column’s values to select data.
+df[df.A > 0]
+
+#Selecting values from a DataFrame where a boolean condition is met.
+df[df > 0]
+
+
+## Setting, add one more column into the dataframe
+
+s1 = pd.Series([1, 2, 3, 4, 5, 6], index=pd.date_range('20130102', periods=6))
+df['F'] = s1
+
+
+
+df1.dropna(how='any')
+df1.fillna(value=5)
+pd.isna(df1)
+
+
+## Apply, apply a function to the dataframe
+
+df.apply(np.cumsum)
+df.apply(lambda x: x.max() - x.min())
+
+
+
+## Append is appending rows to the dataframe
+df = pd.DataFrame(np.random.randn(8, 4), columns=['A', 'B', 'C', 'D'])
+s = df.iloc[3]
+df.append(s, ignore_index=True)
+
+
+
+## Grouping 
+"""
+By “group by” we are referring to a process involving one or more of the following steps:
+
+Splitting the data into groups based on some criteria
+Applying a function to each group independently
+Combining the results into a data structure
+"""
+
+
+
+## Stack
+tuples = list(zip(*[['bar', 'bar', 'baz', 'baz',
+   ....:                      'foo', 'foo', 'qux', 'qux'],
+   ....:                     ['one', 'two', 'one', 'two',
+   ....:                      'one', 'two', 'one', 'two']]))
+
+
+## Pivot Table
+pd.pivot_table(df, values='D', index=['A', 'B'], columns=['C'])
+
+
+## Categoricals
+df = pd.DataFrame({"id": [1, 2, 3, 4, 5, 6],
+                   "raw_grade": ['a', 'b', 'b', 'a', 'a', 'e']})
+
+df["grade"] = df["raw_grade"].astype("category")
+df["grade"].cat.categories = ["very good", "good", "very bad"]
+
+
+## Reorder the categories and simultaneously add the missing categories (methods under Series .cat return a new Series by default).
+
+df["grade"] = df["grade"].cat.set_categories(["very bad", "bad", "medium", "good", "very good"])
+df.sort_values(by="grade")
+
+
+
