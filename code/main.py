@@ -2,10 +2,6 @@ import pandas as pd
 import os
 import numpy as np
 
-! ls  
-! pwd 
-
-#
 ## Convert multiple files into one file and create the outputs
 
 import os
@@ -23,7 +19,6 @@ print(all_filenames)
 combined_csv = pd.concat([pd.read_csv(f, encoding = "ISO-8859-1") for f in all_filenames ])
 #export to csv
 combined_csv.to_csv( "combined_csv.csv", index=False, encoding='utf-8-sig')
-
 
 
 
@@ -52,7 +47,7 @@ df2 = pd.DataFrame({'A': 1.,
                     'F': 'foo'})
 
 ## 2.3. From external data
-
+df = pd.read_csv('./data/superstore.csv', encoding = "ISO-8859-1")
 
 
 
@@ -71,10 +66,39 @@ df.describe()
 
 
 ## 3. Data Manipulation
+### This chaptal is about how to slice data, there are multiple ways to do that and the data label in rwo is index and in column is columns
+
+# Check the index and columns
+df.index
+df.columns
+
 df = pd.read_csv("./data/superstore.csv", encoding = "ISO-8859-1")
 df.sort_index(axis=1, ascending=False)
 df.sort_values(by='B')
 
+df = pd.DataFrame({
+   ....:     'one': pd.Series(np.random.randn(3), index=['a', 'b', 'c']),
+   ....:     'two': pd.Series(np.random.randn(4), index=['a', 'b', 'c', 'd']),
+   ....:     'three': pd.Series(np.random.randn(3), index=['b', 'c', 'd'])})
+
+row = df.iloc[1]
+
+column = df['two']
+df.sub(row, axis='columns')
+
+dfmi = df.copy()
+
+In [27]: dfmi.index = pd.MultiIndex.from_tuples([(1, 'a'), (1, 'b'),
+   ....:                                         (1, 'c'), (2, 'a')],
+   ....:                                        names=['first', 'second'])
+   ....: 
+
+In [28]: dfmi.sub(column, axis=0, level='second')
+
+
+
+Missing data:
+df.add(df2, fill_value=0)
 
 # Selection
 df.Country
@@ -109,6 +133,65 @@ df[df.A > 0]
 
 #Selecting values from a DataFrame where a boolean condition is met.
 df[df > 0]
+
+# Boolean reductions
+In [48]: (df > 0).all()
+Out[48]: 
+one      False
+two       True
+three    False
+dtype: bool
+
+In [49]: (df > 0).any()
+Out[49]: 
+one      True
+two      True
+three    True
+dtype: bool
+
+(df > 0).any().any()
+
+df1.equals(df2)
+
+
+# Combining overlapping data sets - A way to deal with the missing values
+
+df1.combine_first(df2)
+
+The idxmin() and idxmax() functions on Series and DataFrame compute the index labels with the minimum and maximum corresponding values:
+
+Value counts (histogramming) / mode
+The value_counts() Series method and top-level function computes a histogram of a 1D array of values. It can also be used as a function on regular arrays:
+
+
+
+In [126]: arr = np.random.randn(20)
+
+In [127]: factor = pd.cut(arr, 4)
+
+In [128]: factor
+Out[128]: 
+[(-0.251, 0.464], (-0.968, -0.251], (0.464, 1.179], (-0.251, 0.464], (-0.968, -0.251], ..., (-0.251, 0.464], (-0.968, -0.251], (-0.968, -0.251], (-0.968, -0.251], (-0.968, -0.251]]
+Length: 20
+Categories (4, interval[float64]): [(-0.968, -0.251] < (-0.251, 0.464] < (0.464, 1.179] <
+                                    (1.179, 1.893]]
+
+In [129]: factor = pd.cut(arr, [-5, -1, 0, 1, 5])
+
+pipe()
+
+df.apply(np.mean)
+Out[141]: 
+one      0.811094
+two      1.360588
+three    0.187958
+dtype: float64
+
+In [142]: df.apply(np.mean, axis=1)
+Out[142]: 
+
+
+
 
 
 ## Setting, add one more column into the dataframe
